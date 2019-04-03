@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+  <title>Reaction GIFs</title>
+  <style type="text/css">
+
+  </style>
+</head>
+
+<body>
+  <header>Reaction GIFs</header>
+
+  <div class="container">
+
+    <form id="myform">
+      <label for="reactionInput">Enter Reaction:</label>
+      <input type="text" id="reactionInput">
+      <br>
+      <input id="addReaction" type="submit" value="Add Reaction:">
+    </form>
+    <div id="reactionButtons"></div>
+    <div id="reactionsDiv"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      var reactions = ["Excited", "Yes", "High five", "OMG", "judging you", "confused", "flirting"];
+
+
+      function reactionDisplay() {
+        
+        var reaction = $(this).attr("data-name");
+        var api_key = "BmFCWcQQgcb2SAYlTEoO6QgXwFAmvrHQ";
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+          reaction + "&api_key=BmFCWcQQgcb2SAYlTEoO6QgXwFAmvrHQ";
+
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).then(function (response) {
+          console.log(response)
+          var results = response.data;
+          const lastReaction = 8;
+
+          for (var i = 0; i < lastReaction; i++) {
+
+            var gifDiv = $("<div>");
+            var rating = results[i].rating;
+            var p = $("<p>").text("Rating: " + rating);
+            var reactImage = $("<img>");
+            reactImage.attr("src", results[i].images.fixed_height_still.url);
+            reactImage.attr("data-state", "still");
+            reactImage.attr("data-animate", results[i].images.fixed_height.url);
+            reactImage.attr("data-still", results[i].images.fixed_height_still.url);
+            gifDiv.append(p);
+            reactImage.addClass("reactImage");
+            gifDiv.append(reactImage);
+            $("#reactionsDiv").prepend(gifDiv);
+          }
+        });
+      }
+
+      $(document).on("click", ".reactImage", function () {
+        var state = $(this).attr("data-state");
+        console.log("hi")
+        if (state === "still") {
+          $(this).attr("src", $(this).attr("data-animate"));
+          $(this).attr("data-state", "animate");
+
+        } else {
+          $(this).attr("src", $(this).attr("data-still"));
+          $(this).attr("data-state", "still");
+        }
+      });
+
+      function renderButtons() {
+        $("#reactionButtons").empty();
+        for (var i = 0; i < reactions.length; i++) {
+          var a = $("<button>");
+          a.addClass("reaction-btn");
+          a.attr("data-name", reactions[i]);
+          a.text(reactions[i]);
+          const addbutton = $("<button>").addClass('reaction-btn')
+            .attr('data-name', reactions[i])
+            .text(reactions[i]);
+          $("#reactionButtons").append(a);
+        }
+      }
+
+
+      $("#addReaction").on("click", function (event) {
+        event.preventDefault();
+        var reaction = $("#reactionInput").val().trim();
+        reactions.push(reaction);
+        renderButtons();
+      });
+      $(document).on("click", ".reaction-btn", reactionDisplay);
+      renderButtons();
+    </script>
+  </div>
+</body>
+
+</html>
