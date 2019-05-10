@@ -4,6 +4,8 @@
 
 This app displays buttons related to a certain topic and allows you to add search terms to generate additional buttons that when clicked, accesses the GIPHY API and generates 8 static GIPHY images. Click on an image to pause or play the GIF.
 
+![image](https://user-images.githubusercontent.com/47680905/57551704-53513980-732f-11e9-87d1-07c6f5da823e.png)
+
 #Getting Started
 
 Click on the link to see the completed assignment:
